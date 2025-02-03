@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use App\Models\Admin;
 
 class AdminLoginController extends Controller
 {
@@ -21,14 +22,13 @@ class AdminLoginController extends Controller
             'password' => ['required', 'min:8'],
         ]);
         $remember = $request->has('remember');
+        $email = Admin::where('email', $credentials['email'])->first();
+        if (!$email) return redirect()->back()->with('toast-warning', 'Email not found');
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard');
-        } else {
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ]);
         }
+        return redirect()->back()->with('toast-warning', 'Invalid credentials');
     }
 
     public function destroy(Request $request)

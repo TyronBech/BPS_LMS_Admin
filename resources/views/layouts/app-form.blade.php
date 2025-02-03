@@ -23,7 +23,8 @@
         </a>
       </div>
   </header>
-  <main class="container relative mx-auto px-2 font-sans flex-col">
+  <main class="container relative mx-auto my-4 px-2 font-sans flex-col">
+    @include('layouts.toast')
     @yield('content')
   </main>
   @include('layouts.footer')

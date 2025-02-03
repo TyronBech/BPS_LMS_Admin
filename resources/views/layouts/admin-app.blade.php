@@ -12,6 +12,7 @@
 <body class="relative bg-blue-50">
   @include('layouts.admin-header')
   <main class="container relative mx-auto px-2 font-sans flex-col">
+    @include('layouts.toast')
     @yield('content')
   </main>
   @include('layouts.footer')

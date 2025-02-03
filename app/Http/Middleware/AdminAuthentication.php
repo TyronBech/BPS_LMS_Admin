@@ -22,7 +22,7 @@ class AdminAuthentication
             if ($request->expectsJson()) {
                 return response('Unauthorized.', 401);
             }
-            return redirect()->route('login')->with('error', 'Session expired or unauthorized. Please log in.');
+            return redirect()->route('login')->with('toast-error', 'Session expired or unauthorized. Please log in.');
         }
         return $next($request);
     }
