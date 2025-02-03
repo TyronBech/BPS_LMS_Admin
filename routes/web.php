@@ -10,8 +10,8 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::middleware('guest', RedirectIfAuthenticated::class)->group(function () {
-    Route::get('login', [AdminLoginController::class, 'index'])->name('admin.login');
-    Route::post('login', [AdminLoginController::class, 'store'])->name('admin.login');
+    Route::get('login', [AdminLoginController::class, 'index'])->name('login');
+    Route::post('login', [AdminLoginController::class, 'store'])->name('login');
 });
 Route::prefix('admin')->middleware('auth:admin', AdminAuthentication::class)->group(function () {
     Route::get('dashboard', function(){

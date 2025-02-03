@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\AdminAuthentication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Session;
 
 class AdminLoginController extends Controller
 {
@@ -20,21 +22,15 @@ class AdminLoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'min:8'],
         ]);
-        $admin = Admin::where('email', $request->email)->first();
-        if (!$admin) {
-            return back()->with('error', 'Invalid credentials');
-        }
-        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
-            $request->session()->regenerate();
-            $request->session()->put('admin', $admin);
-            $request->session()->put('admin_id', $admin->id);
+        $adminMiddleware = new AdminAuthentication();
+        return $adminMiddleware->handle($request, function () {
             return redirect()->route('admin.dashboard');
-        }
-        return back()->withInput($request->only('email', 'remember'));
+        });
     }
 
     public function destroy(Request $request)
     {
+        $request->session()->flush();
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

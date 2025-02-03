@@ -1,7 +1,7 @@
 
 @extends('layouts.app-form')
 @section('content')
-<form class="max-w-lg mx-auto mt-20 bg-white shadow-md rounded-lg p-10 dark:bg-gray-800" action="{{ route('admin.login') }}" method="POST">
+<form class="max-w-lg mx-auto mt-20 bg-white shadow-md rounded-lg p-10 dark:bg-gray-800" action="{{ route('login') }}" method="POST">
   @csrf
   <h1 class="text-2xl font-semibold text-gray-900 dark:text-white text-center">Log in to your account</h1>
   <div class="my-5">
@@ -14,7 +14,7 @@
   </div>
   <div class="flex items-start mb-5">
     <div class="flex items-center h-5">
-      <input id="remember" name="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"/>
+      <input id="remember" name="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"/>
     </div>
     <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
   </div>

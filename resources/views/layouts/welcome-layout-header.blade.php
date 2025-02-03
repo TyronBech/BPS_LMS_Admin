@@ -18,7 +18,7 @@
             <a href="#" class="block py-2 px-3 text-white rounded hover:underline lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-100 lg:p-0">About</a>
           </li>
           <li>
-            <form action="{{ route('admin.login') }}" method="GET">
+            <form action="{{ route('login') }}" method="GET">
               @csrf
               <button class="block py-2 px-3 text-white rounded hover:underline lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-100 lg:p-0" type="submit">
                 Log In
