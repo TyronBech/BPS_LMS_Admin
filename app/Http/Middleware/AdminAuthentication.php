@@ -18,20 +18,16 @@ class AdminAuthentication
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::guard('admin')->check()) {
-            $admin = Admin::where('email', $request->email)->first();
-            if (!$admin) {
-                return redirect()->route('login')->with('error', 'Email not found');
+        if (!Auth::guard('admin')->check() && !$this->isLogoutRequest($request)) {
+            if ($request->expectsJson()) {
+                return response('Unauthorized.', 401);
             }
-            $credentials = $request->only('email', 'password');
-            $remember = $request->has('remember');
-            if (Auth::guard('admin')->attempt($credentials, $remember)) {
-                $request->session()->put('admin', Auth::guard('admin')->user());
-                $request->session()->put('admin_id', Auth::guard('admin')->id());
-                return $next($request);
-            }
-            return redirect()->route('login')->with('error', 'Invalid credentials');
+            return redirect()->route('login')->with('error', 'Session expired or unauthorized. Please log in.');
         }
         return $next($request);
+    }
+
+    protected function isLogoutRequest(Request $request) {
+        return $request->isMethod('post') && $request->routeIs('admin.logout');
     }
 }

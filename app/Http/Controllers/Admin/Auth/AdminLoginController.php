@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\AdminAuthentication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Admin;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\File;
 
 class AdminLoginController extends Controller
 {
@@ -18,22 +16,34 @@ class AdminLoginController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'min:8'],
         ]);
-        $adminMiddleware = new AdminAuthentication();
-        return $adminMiddleware->handle($request, function () {
+        $remember = $request->has('remember');
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $request->session()->regenerate();
             return redirect()->route('admin.dashboard');
-        });
+        } else {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ]);
+        }
     }
 
     public function destroy(Request $request)
     {
-        $request->session()->flush();
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        $sessionPath = config('session.files');
+        $files = File::files($sessionPath);
+        foreach ($files as $file) {
+            File::delete($file);
+        }
         return redirect()->route('welcome');
+    }
+    public function test(){
+        // sample function testing
     }
 }

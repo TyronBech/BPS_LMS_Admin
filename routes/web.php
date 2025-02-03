@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+Route::get('test', [AdminLoginController::class, 'test']);
 
 Route::middleware('guest', RedirectIfAuthenticated::class)->group(function () {
     Route::get('login', [AdminLoginController::class, 'index'])->name('login');
