@@ -3,8 +3,8 @@
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Middleware\AdminAuthentication;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Http\Controllers\Admin\Report\LogsController;
-use App\Http\Controllers\Admin\Report\VisitorLogsController;
+use App\Http\Controllers\Report\LogsController;
+use App\Http\Controllers\Report\VisitorLogsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('test', [AdminLoginController::class, 'test']);
@@ -18,13 +18,13 @@ Route::middleware('guest', RedirectIfAuthenticated::class)->group(function () {
 });
 Route::prefix('admin')->middleware('auth:admin', AdminAuthentication::class)->group(function () {
     Route::get('dashboard', function(){
-        return view('admin.dashboard.dashboard');
-    })->name('admin.dashboard');
+        return view('dashboard.dashboard');
+    })->name('dashboard');
     Route::group(['prefix' => 'report'], function () {
-        Route::get('user-report',           [LogsController::class, 'index'])            ->name('admin.report.user');
-        Route::post('user-report',          [LogsController::class, 'retrieve'])         ->name('admin.report.user-retrieve');
-        Route::get('visitor-report',        [VisitorLogsController::class, 'index'])     ->name('admin.report.visitor');
-        Route::post('visitor-report',       [VisitorLogsController::class, 'retrieve'])  ->name('admin.report.visitor-retrieve');
+        Route::get('user-report',           [LogsController::class, 'index'])            ->name('report.user');
+        Route::post('user-report',          [LogsController::class, 'retrieve'])         ->name('report.user-retrieve');
+        Route::get('visitor-report',        [VisitorLogsController::class, 'index'])     ->name('report.visitor');
+        Route::post('visitor-report',       [VisitorLogsController::class, 'retrieve'])  ->name('report.visitor-retrieve');
     });
         /*
         Route::get('transaction',           [TransactionController::class, 'index'])    ->name('transaction');

@@ -14,7 +14,7 @@
   <header>
       <div class="bg-blue-700 border-gray-200">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
-          <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
             <img class="rounded-full w-36 h-36" src="{{ asset('img/School Logo.png') }}" alt="School Logo">
             <div class="flex flex-col justify-center">
               <h1 class="lg:text-2xl md:text-lg text-white font-semibold text-center">Bicutan Parochial School</h1>

@@ -1,7 +1,7 @@
 @extends('layouts.admin-app')
 @section('content')
 <h1 class="font-semibold text-center text-4xl p-5">Report Document</h1>
-  <form action="{{ route('admin.report.user-retrieve') }}" method="POST">
+  <form action="{{ route('report.user-retrieve') }}" method="POST">
     @csrf
     <input type="hidden" id="shownData" name="shownData" value="{{ json_encode($data) }}">
     <div class="container flex flex-row justify-center">
@@ -45,7 +45,7 @@
     </div>
   </form>
   <h1 class="text-md font-extrabold">PEAK HOUR: <small class="ms-2 font-semibold text-gray-500">{{ $peak_hour }}</small></h1>
-  @include('admin.report.students.user-logs-table')
+  @include('report.students.user-logs-table')
 @endsection
 @section('scripts')
 @vite('resources/js/report-buttons.js')

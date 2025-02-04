@@ -1,7 +1,7 @@
 <header>
   <nav class="bg-blue-700 border-gray-200">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
-      <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img class="rounded-full w-36 h-36" src="{{ asset('img/School Logo.png') }}" alt="School Logo">
         <div class="flex flex-col justify-center">
           <h1 class="lg:text-2xl md:text-lg text-white font-semibold text-center">Bicutan Parochial School</h1>
@@ -18,7 +18,7 @@
       <div class="hidden w-full lg:block lg:w-auto pt-4" id="navbar-dropdown">
         <ul class="flex flex-col font-medium p-4 lg:p-0 mt-4 mx-8 mb-4 border border-gray-100 rounded-lg bg-blue-700 lg:space-x-8 rtl:space-x-reverse lg:flex-row lg:mt-0 lg:border-0 lg:bg-blue-700">
           <li>
-            <a href="{{ route('admin.dashboard') }}" class="block py-2 px-3 text-white bg-blue-700 rounded hover:underline lg:bg-transparent lg:text-white lg:p-0" aria-current="page">Home</a>
+            <a href="{{ route('dashboard') }}" class="block py-2 px-3 text-white bg-blue-700 rounded hover:underline lg:bg-transparent lg:text-white lg:p-0" aria-current="page">Home</a>
           </li>
           <li>
             <button id="dropdownNavbarLink" data-dropdown-toggle="navbarReport" class="flex items-center justify-between w-full py-2 px-3 text-white rounded hover:underline lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-100 lg:p-0 lg:w-auto">Reports <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -28,7 +28,7 @@
             <div id="navbarReport" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
               <ul class="py-2 text-sm text-gray-900" aria-labelledby="dropdownLargeButton">
                 <li>
-                  <a href="{{ route('admin.report.user') }}" class="flex pl-2 py-2 hover:bg-gray-300">
+                  <a href="{{ route('report.user') }}" class="flex pl-2 py-2 hover:bg-gray-300">
                     <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                       <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                     </svg>
@@ -36,7 +36,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="{{ route('admin.report.visitor') }}" class="flex pl-2 py-2 hover:bg-gray-300">
+                  <a href="{{ route('report.visitor') }}" class="flex pl-2 py-2 hover:bg-gray-300">
                     <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                       <path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                     </svg>

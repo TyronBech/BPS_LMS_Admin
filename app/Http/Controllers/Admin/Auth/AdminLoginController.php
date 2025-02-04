@@ -26,7 +26,7 @@ class AdminLoginController extends Controller
         if (!$email) return redirect()->back()->with('toast-warning', 'Email not found');
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('dashboard');
         }
         return redirect()->back()->with('toast-warning', 'Invalid credentials');
     }
