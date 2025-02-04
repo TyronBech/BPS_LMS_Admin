@@ -4,18 +4,12 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class UserFactory extends Factory
+class StudentFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     *
-    protected static ?string $password;
-
     /**
      * Define the model's default state.
      *
@@ -24,7 +18,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'lrn'               => $this->faker->ean13(),
+            'lrn'               => $this->faker->ean8(),
             'employee_id'       => null,
             'rfid_tag'          => $this->faker->ean13(),
             'first_name'        => $this->faker->firstName(),
@@ -42,14 +36,4 @@ class UserFactory extends Factory
             'updated_at'        => now()
         ];
     }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
-    }*/
 }

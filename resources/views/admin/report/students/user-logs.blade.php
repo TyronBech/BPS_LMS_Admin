@@ -1,4 +1,4 @@
-@extends('layouts.welcome-layout')
+@extends('layouts.admin-app')
 @section('content')
 <h1 class="font-semibold text-center text-4xl p-5">Report Document</h1>
   <form action="{{ route('admin.report.user-retrieve') }}" method="POST">
@@ -46,4 +46,7 @@
   </form>
   <h1 class="text-md font-extrabold">PEAK HOUR: <small class="ms-2 font-semibold text-gray-500">{{ $peak_hour }}</small></h1>
   @include('admin.report.students.user-logs-table')
+@endsection
+@section('scripts')
+@vite('resources/js/report-buttons.js')
 @endsection

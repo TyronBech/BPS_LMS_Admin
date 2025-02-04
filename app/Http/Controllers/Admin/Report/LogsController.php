@@ -34,7 +34,7 @@ class LogsController extends Controller
         $inputLastName  = $request->input('last-name');
         $fromInputDate  = $request->input('start');
         $toInputDate    = $request->input('end');
-        $shownData    = $request->input('shownData');
+        $shownData      = $request->input('shownData');
         $initialData    = json_decode($shownData);
         $data           = array();
         $peak_hour      = "00:00";
@@ -56,14 +56,14 @@ class LogsController extends Controller
                                 ->get();
                 }
             }
-            if(!count($data)) return redirect()->route('admin.report.user')->with('retrieve-error', 'There are no data to generate.');
+            if(!count($data)) return redirect()->route('admin.report.user')->with('toast-error', 'There are no data to generate.');
             $this->generatePDF($data);
-            return redirect()->route('admin.report.user')->with('retrieve-success', 'PDF successfully generated.');
+            return redirect()->route('admin.report.user')->with('toast-success', 'PDF successfully generated.');
         } else if($findBtn == 'activated'){
             if(strlen($fromInputDate) != 0 || strlen($inputName) != 0 || strlen($inputLastName) != 0){
                 $data = $this->generateData($request);
             } else {
-                return redirect()->route('admin.report.user')->with('retrieve-error', 'Please enter at least one search criteria.');
+                return redirect()->route('admin.report.user')->with('toast-warning', 'Please enter at least one search criteria.');
             }
         } else if($findAllBtn == 'activated'){
             $inputName      = "";
@@ -98,11 +98,11 @@ class LogsController extends Controller
                                 ->get();
                 }
             }
-            if(!count($data)) return redirect()->route('admin.report.user')->with('retrieve-error', 'There are no data to generate.');
+            if(!count($data)) return redirect()->route('admin.report.user')->with('toast-error', 'There are no data to generate.');
             $this->exportExcel($data);
-            return redirect()->route('admin.report.user')->with('retrieve-success', 'Excel successfully generated.');
+            return redirect()->route('admin.report.user')->with('toast-success', 'Excel successfully generated.');
         }
-        if(!count($data)) return redirect()->route('admin.report.user')->with('retrieve-error', 'No data found.');
+        if(!count($data)) return redirect()->route('admin.report.user')->with('toast-error', 'No data found.');
         if(count($data) > 0) $time_in_arr = $data->pluck('log_time')->toArray();
         $peak_hour = $this->findPeakHour($time_in_arr) . ":00";
         return view('admin.report.students.user-logs', compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate', 'peak_hour'));
@@ -147,14 +147,14 @@ class LogsController extends Controller
         $sheet->setCellValue('H1', 'Action');
         $row = 2;
         foreach($data as $item){
-            $sheet->setCellValue('A' . $row, $item->id);
-            $sheet->setCellValue('B' . $row, $item->rfid);
+            $sheet->setCellValue('A' . $row, $item->log_id);
+            $sheet->setCellValue('B' . $row, $item->rfid_tag);
             $sheet->setCellValue('C' . $row, $item->first_name);
             $sheet->setCellValue('D' . $row, $item->middle_name);
             $sheet->setCellValue('E' . $row, $item->last_name);
             $sheet->setCellValue('F' . $row, $item->log_date);
             $sheet->setCellValue('G' . $row, $item->log_time);
-            $sheet->setCellValue('H' . $row, $item->actions);
+            $sheet->setCellValue('H' . $row, $item->actiontype);
             $row++;
         }
         $writer     = new WriterXlsx($spreadsheet);
@@ -166,8 +166,8 @@ class LogsController extends Controller
     {
         $fromInputDate  = $request->input('start');
         $toInputDate    = $request->input('end');
-        $inputName      = $request->input('first-name');
-        $inputLastName  = $request->input('last-name');
+        $inputName      = strtolower($request->input('first-name'));
+        $inputLastName  = strtolower($request->input('last-name'));
         $data           = array();
         if(strlen($fromInputDate) > 0){
             $fromInputDate = DateTime::createFromFormat('m/d/Y', $fromInputDate);
@@ -186,8 +186,8 @@ class LogsController extends Controller
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
                     ->whereBetween(DB::raw('DATE(userlogs.timestamp)'), [$fromInputDate, $toInputDate])
-                    ->where('first_name', $inputName)
-                    ->where('last_name', $inputLastName)
+                    ->where(DB::raw('lower(first_name)'), $inputName)
+                    ->where(DB::raw('lower(last_name)'), $inputLastName)
                     ->orderBy(DB::raw('DATE(userlogs.timestamp)'), 'asc')
                     ->orderBy('first_name', 'asc')
                     ->orderBy('last_name', 'asc')
@@ -202,8 +202,8 @@ class LogsController extends Controller
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
-                    ->where('first_name', $inputName)
-                    ->where('last_name', $inputLastName)
+                    ->where(DB::raw('lower(first_name)'), $inputName)
+                    ->where(DB::raw('lower(last_name)'), $inputLastName)
                     ->orderBy(DB::raw('DATE(userlogs.timestamp)'), 'asc')
                     ->get();
         } else if(strlen($fromInputDate) > 0 && strlen($inputName) > 0){
@@ -217,7 +217,7 @@ class LogsController extends Controller
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
                     ->whereBetween(DB::raw('DATE(userlogs.timestamp)'), [$fromInputDate, $toInputDate])
-                    ->where('first_name', $inputName)
+                    ->where(DB::raw('lower(first_name)'), $inputName)
                     ->orderBy(DB::raw('DATE(userlogs.timestamp)'), 'asc')
                     ->get();
         } else if(strlen($fromInputDate) > 0 && strlen($inputLastName) > 0){
@@ -231,7 +231,7 @@ class LogsController extends Controller
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
                     ->whereBetween(DB::raw('DATE(userlogs.timestamp)'), [$fromInputDate, $toInputDate])
-                    ->where('last_name', $inputLastName)
+                    ->where(DB::raw('lower(last_name)'), $inputLastName)
                     ->orderBy(DB::raw('DATE(userlogs.timestamp)'), 'asc')
                     ->get();
         } else if(strlen($inputName) > 0){
@@ -244,7 +244,7 @@ class LogsController extends Controller
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
-                    ->where('first_name', $inputName)
+                    ->where(DB::raw('lower(first_name)'), $inputName)
                     ->orderBy(DB::raw('DATE(userlogs.timestamp)'), 'asc')
                     ->get();
         } else if(strlen($inputLastName) > 0){
@@ -257,7 +257,7 @@ class LogsController extends Controller
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
-                    ->where('last_name', $inputLastName)
+                    ->where(DB::raw('lower(last_name)'), $inputLastName)
                     ->orderBy(DB::raw('DATE(userlogs.timestamp)'), 'asc')
                     ->get();
         } else if(strlen($fromInputDate) > 0){
