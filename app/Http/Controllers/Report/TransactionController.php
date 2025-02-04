@@ -16,9 +16,9 @@ class TransactionController extends Controller
         $inputName      = "";
         $inputLastName  = "";
         $data           = array();
-        return view('transactions' , compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate'));
+        return view('report.transactions.transactions' , compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate'));
     }
-    public function getData(Request $request)
+    public function retrieve(Request $request)
     {
         $fromInputDate  = $request->input('start');
         $toInputDate    = $request->input('end');
@@ -31,7 +31,7 @@ class TransactionController extends Controller
             if(strlen($fromInputDate) != 0 || strlen($inputName) != 0 || strlen($inputLastName) != 0){
                 $data = $this->generateData($request);
             } else {
-                return redirect()->route('transaction')->with('transaction-error', 'Please enter at least one search criteria.');
+                return redirect()->route('report.transaction')->with('toast-warning', 'Please enter at least one search criteria.');
             }
         } else if($findAllBtn == 'activated'){
             $inputName      = "";
@@ -50,8 +50,8 @@ class TransactionController extends Controller
                     ->orderBy('transaction.updated_at', 'desc')
                     ->get();
         }
-        if(!count($data)) return redirect()->route('transaction')->with('transaction-error', 'No data found.');
-        return view('transactions' , compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate'));
+        if(!count($data)) return redirect()->route('report.transaction')->with('toast-error', 'No data found.');
+        return view('report.transaction.transactions' , compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate'));
     }
     private function generateData(Request $request)
     {

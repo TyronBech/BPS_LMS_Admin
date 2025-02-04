@@ -5,6 +5,7 @@ use App\Http\Middleware\AdminAuthentication;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Controllers\Report\LogsController;
 use App\Http\Controllers\Report\VisitorLogsController;
+use App\Http\Controllers\Report\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('test', [AdminLoginController::class, 'test']);
@@ -21,14 +22,14 @@ Route::prefix('admin')->middleware('auth:admin', AdminAuthentication::class)->gr
         return view('dashboard.dashboard');
     })->name('dashboard');
     Route::group(['prefix' => 'report'], function () {
-        Route::get('user-report',           [LogsController::class, 'index'])            ->name('report.user');
-        Route::post('user-report',          [LogsController::class, 'retrieve'])         ->name('report.user-retrieve');
-        Route::get('visitor-report',        [VisitorLogsController::class, 'index'])     ->name('report.visitor');
-        Route::post('visitor-report',       [VisitorLogsController::class, 'retrieve'])  ->name('report.visitor-retrieve');
+        Route::get('user-report',           [LogsController::class, 'index'])           ->name('report.user');
+        Route::post('user-report',          [LogsController::class, 'retrieve'])        ->name('report.user-retrieve');
+        Route::get('visitor-report',        [VisitorLogsController::class, 'index'])    ->name('report.visitor');
+        Route::post('visitor-report',       [VisitorLogsController::class, 'retrieve']) ->name('report.visitor-retrieve');
+        Route::get('transaction',           [TransactionController::class, 'index'])    ->name('report.transaction');
+        Route::post('transaction',          [TransactionController::class, 'retrieve']) ->name('report.transaction-retrieve');
     });
         /*
-        Route::get('transaction',           [TransactionController::class, 'index'])    ->name('transaction');
-        Route::post('transaction',          [TransactionController::class, 'getData'])  ->name('getTransactionData');
         Route::get('book-circulation',      [BookController::class, 'index'])           ->name('bookCirculation');
         Route::post('book-circulation',     [BookController::class, 'getData'])         ->name('getBookData');
     /*
