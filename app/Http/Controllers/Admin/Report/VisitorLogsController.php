@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Log;
-use Barryvdh\DomPDF\Facade\Pdf;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
+use Barryvdh\DomPDF\Facade\Pdf;
+use ErrorException;
 use DateTime;
 
-class LogsController extends Controller
+class VisitorLogsController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         $inputName      = "";
         $inputLastName  = "";
         $fromInputDate  = "";
@@ -22,7 +22,7 @@ class LogsController extends Controller
         $showTable      = false;
         $peak_hour      = "00:00";
         $data           = array();
-        return view('admin.report.students.user-logs', compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate', 'showTable', 'peak_hour'));
+        return view('admin.report.visitors.visitor-logs', compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate', 'showTable', 'peak_hour'));
     }
     public function retrieve(Request $request)
     {
@@ -34,7 +34,7 @@ class LogsController extends Controller
         $inputLastName  = $request->input('last-name');
         $fromInputDate  = $request->input('start');
         $toInputDate    = $request->input('end');
-        $shownData      = $request->input('shownData');
+        $shownData    = $request->input('shownData');
         $initialData    = json_decode($shownData);
         $data           = array();
         $peak_hour      = "00:00";
@@ -44,38 +44,38 @@ class LogsController extends Controller
                 $data = $this->generateData($request);
             } else {
                 if($initialData != null){
-                    $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+                    $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                                 ->select('userlogs.log_id', 
-                                    'a.rfid_tag', 
-                                    'a.first_name', 
-                                    'a.middle_name', 
-                                    'a.last_name', 
+                                    'v.email', 
+                                    'v.first_name', 
+                                    'v.middle_name', 
+                                    'v.last_name', 
                                     DB::raw('DATE(userlogs.timestamp) as log_date'), 
                                     DB::raw('TIME(userlogs.timestamp) as log_time'), 
                                     'userlogs.actiontype')
                                 ->get();
                 }
             }
-            if(!count($data)) return redirect()->route('admin.report.user')->with('toast-error', 'There are no data to generate.');
+            if(!count($data)) return redirect()->route('admin.report.visitor')->with('toast-error', 'There are no data to generate.');
             $this->generatePDF($data);
-            return redirect()->route('admin.report.user')->with('toast-success', 'PDF successfully generated.');
+            return redirect()->route('admin.report.visitor')->with('toast-success', 'PDF successfully generated.');
         } else if($findBtn == 'activated'){
             if(strlen($fromInputDate) != 0 || strlen($inputName) != 0 || strlen($inputLastName) != 0){
                 $data = $this->generateData($request);
             } else {
-                return redirect()->route('admin.report.user')->with('toast-warning', 'Please enter at least one search criteria.');
+                return redirect()->route('admin.report.visitor')->with('toast-warning', 'Please enter at least one search criteria.');
             }
         } else if($findAllBtn == 'activated'){
             $inputName      = "";
             $inputLastName  = "";
             $fromInputDate  = "";
             $toInputDate    = "";
-            $data           = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data           = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                                     ->select('userlogs.log_id',
-                                        'a.rfid_tag', 
-                                        'a.first_name',
-                                        'a.middle_name', 
-                                        'a.last_name', 
+                                        'v.email',
+                                        'v.first_name',
+                                        'v.middle_name',
+                                        'v.last_name',
                                         DB::raw('DATE(userlogs.timestamp) as log_date'), 
                                         DB::raw('TIME(userlogs.timestamp) as log_time'), 
                                         'userlogs.actiontype')
@@ -86,26 +86,26 @@ class LogsController extends Controller
              $data = $this->generateData($request);
             } else {
                 if($initialData != null){
-                    $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+                    $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                                 ->select('userlogs.log_id', 
-                                    'a.rfid_tag', 
-                                    'a.first_name', 
-                                    'a.middle_name', 
-                                    'a.last_name', 
+                                    'v.email', 
+                                    'v.first_name', 
+                                    'v.middle_name', 
+                                    'v.last_name', 
                                     DB::raw('DATE(userlogs.timestamp) as log_date'), 
                                     DB::raw('TIME(userlogs.timestamp) as log_time'), 
                                     'userlogs.actiontype')
                                 ->get();
                 }
             }
-            if(!count($data)) return redirect()->route('admin.report.user')->with('toast-error', 'There are no data to generate.');
+            if(!count($data)) return redirect()->route('admin.report.visitor')->with('toast-error', 'There are no data to generate.');
             $this->exportExcel($data);
-            return redirect()->route('admin.report.user')->with('toast-success', 'Excel successfully generated.');
+            return redirect()->route('admin.report.visitor')->with('toast-success', 'Excel successfully generated.');
         }
-        if(!count($data)) return redirect()->route('admin.report.user')->with('toast-error', 'No data found.');
+        if(!count($data)) return redirect()->route('admin.report.visitor')->with('toast-error', 'No data found.');
         if(count($data) > 0) $time_in_arr = $data->pluck('log_time')->toArray();
         $peak_hour = $this->findPeakHour($time_in_arr) . ":00";
-        return view('admin.report.students.user-logs', compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate', 'peak_hour'));
+        return view('admin.report.visitors.visitor-logs', compact('data', 'inputName', 'inputLastName', 'fromInputDate', 'toInputDate', 'peak_hour'));
     }
     private function findPeakHour($times)
     {
@@ -129,38 +129,42 @@ class LogsController extends Controller
         $PDFData   = $data;
         $PDFData   = $PDFData->chunk(25);
         $arrayPdf   = array( 'data' => $PDFData );
-        $pdf        = Pdf::loadView('pdf.student-pdf-report-format', $arrayPdf);
+        $pdf        = Pdf::loadView('pdf.visitor-pdf-report-format', $arrayPdf);
         $directory  = 'C:/Users/tyron/Downloads';
-        $pdf->save($directory . '/student-report_' . date('Y-m-d') . '.pdf');
+        $pdf->save($directory . '/visitors-report_' . date('Y-m-d') . '.pdf');
     }
     private function exportExcel($data)
     {
-        $spreadsheet    = new Spreadsheet(); 
-        $sheet          = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Log ID');
-        $sheet->setCellValue('B1', 'RFID');
-        $sheet->setCellValue('C1', 'Name');
-        $sheet->setCellValue('D1', 'Middle Name');
-        $sheet->setCellValue('E1', 'Surname');
-        $sheet->setCellValue('F1', 'Date');
-        $sheet->setCellValue('G1', 'Time');
-        $sheet->setCellValue('H1', 'Action');
-        $row = 2;
-        foreach($data as $item){
-            $sheet->setCellValue('A' . $row, $item->log_id);
-            $sheet->setCellValue('B' . $row, $item->rfid_tag);
-            $sheet->setCellValue('C' . $row, $item->first_name);
-            $sheet->setCellValue('D' . $row, $item->middle_name);
-            $sheet->setCellValue('E' . $row, $item->last_name);
-            $sheet->setCellValue('F' . $row, $item->log_date);
-            $sheet->setCellValue('G' . $row, $item->log_time);
-            $sheet->setCellValue('H' . $row, $item->actiontype);
-            $row++;
+        try{
+            $spreadsheet    = new Spreadsheet(); 
+            $sheet          = $spreadsheet->getActiveSheet();
+            $sheet->setCellValue('A1', 'Log ID');
+            $sheet->setCellValue('B1', 'Email');
+            $sheet->setCellValue('C1', 'Name');
+            $sheet->setCellValue('D1', 'Middle Name');
+            $sheet->setCellValue('E1', 'Surname');
+            $sheet->setCellValue('F1', 'Date');
+            $sheet->setCellValue('G1', 'Time');
+            $sheet->setCellValue('H1', 'Action');
+            $row = 2;
+            foreach($data as $item){
+                $sheet->setCellValue('A' . $row, $item->log_id);
+                $sheet->setCellValue('B' . $row, $item->email);
+                $sheet->setCellValue('C' . $row, $item->first_name);
+                $sheet->setCellValue('D' . $row, $item->middle_name);
+                $sheet->setCellValue('E' . $row, $item->last_name);
+                $sheet->setCellValue('F' . $row, $item->log_date);
+                $sheet->setCellValue('G' . $row, $item->log_time);
+                $sheet->setCellValue('H' . $row, $item->actiontype);
+                $row++;
+            }
+            $writer     = new WriterXlsx($spreadsheet);
+            $directory  = 'C:/Users/tyron/Downloads';
+            $filename   = $directory . '/visitors-report_' . date('Y-m-d') . '.xlsx';
+            $writer->save($filename);
+        } catch(ErrorException $e){
+            return redirect()->route('admin.report.visitor')->with('toast-error', 'Error generating excel file.');
         }
-        $writer     = new WriterXlsx($spreadsheet);
-        $directory  = 'C:/Users/tyron/Downloads';
-        $filename   = $directory . '/student-report_' . date('Y-m-d') . '.xlsx';
-        $writer->save($filename);
     }
     private function generateData(Request $request)
     {
@@ -176,12 +180,12 @@ class LogsController extends Controller
             $toInputDate = $toInputDate->format('Y-m-d');
         }
         if(strlen($fromInputDate) > 0 && strlen($inputName) > 0 && strlen($inputLastName) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
@@ -193,12 +197,12 @@ class LogsController extends Controller
                     ->orderBy('last_name', 'asc')
                     ->get();
         } else if(strlen($inputName) > 0 && strlen($inputLastName) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
@@ -209,12 +213,12 @@ class LogsController extends Controller
                     ->orderBy('first_name', 'asc')
                     ->get();
         } else if(strlen($fromInputDate) > 0 && strlen($inputName) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
@@ -225,12 +229,12 @@ class LogsController extends Controller
                     ->orderBy('first_name', 'asc')
                     ->get();
         } else if(strlen($fromInputDate) > 0 && strlen($inputLastName) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
@@ -241,12 +245,12 @@ class LogsController extends Controller
                     ->orderBy('first_name', 'asc')
                     ->get();
         } else if(strlen($inputName) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
@@ -256,12 +260,12 @@ class LogsController extends Controller
                     ->orderBy('first_name', 'asc')
                     ->get();
         } else if(strlen($inputLastName) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')
@@ -271,12 +275,12 @@ class LogsController extends Controller
                     ->orderBy('first_name', 'asc')
                     ->get();
         } else if(strlen($fromInputDate) > 0){
-            $data = Log::join('users as a', 'a.user_id', '=', 'userlogs.user_id')
+            $data = Log::join('visitor as v', 'v.visitor_id', '=', 'userlogs.visitor_id')
                     ->select('userlogs.log_id', 
-                            'a.rfid_tag', 
-                            'a.first_name', 
-                            'a.middle_name', 
-                            'a.last_name', 
+                            'v.email', 
+                            'v.first_name', 
+                            'v.middle_name', 
+                            'v.last_name', 
                             DB::raw('DATE(userlogs.timestamp) as log_date'), 
                             DB::raw('TIME(userlogs.timestamp) as log_time'), 
                             'userlogs.actiontype')

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Middleware\AdminAuthentication;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Controllers\Admin\Report\LogsController;
+use App\Http\Controllers\Admin\Report\VisitorLogsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('test', [AdminLoginController::class, 'test']);
@@ -22,14 +23,14 @@ Route::prefix('admin')->middleware('auth:admin', AdminAuthentication::class)->gr
     Route::group(['prefix' => 'report'], function () {
         Route::get('user-report',           [LogsController::class, 'index'])            ->name('admin.report.user');
         Route::post('user-report',          [LogsController::class, 'retrieve'])         ->name('admin.report.user-retrieve');
+        Route::get('visitor-report',        [VisitorLogsController::class, 'index'])     ->name('admin.report.visitor');
+        Route::post('visitor-report',       [VisitorLogsController::class, 'retrieve'])  ->name('admin.report.visitor-retrieve');
     });
-        /*Route::get('visitor-report',        [VisitorLogController::class, 'index'])     ->name('visitor-report');
-        Route::post('visitor-report',       [VisitorLogController::class, 'retrieve'])  ->name('visitor-retrieve');
+        /*
         Route::get('transaction',           [TransactionController::class, 'index'])    ->name('transaction');
         Route::post('transaction',          [TransactionController::class, 'getData'])  ->name('getTransactionData');
         Route::get('book-circulation',      [BookController::class, 'index'])           ->name('bookCirculation');
         Route::post('book-circulation',     [BookController::class, 'getData'])         ->name('getBookData');
-    });*/
     /*
     Route::group(['prefix' => 'import'], function () {
         Route::get('users',                 [ImportController::class, 'index'])         ->name('import-users');
