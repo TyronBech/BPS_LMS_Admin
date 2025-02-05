@@ -9,7 +9,9 @@ use App\Http\Controllers\Report\TransactionController;
 use App\Http\Controllers\Report\BookCirculationController;
 use App\Http\Controllers\Import\BookImportController;
 use App\Http\Controllers\Import\StudentImportController;
+use App\Http\Controllers\Maintenance\BookMaintenanceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Maintenance\StudentMaintenanceController;
 
 Route::get('test', [AdminLoginController::class, 'test']);
 
@@ -42,27 +44,25 @@ Route::prefix('admin')->middleware('auth:admin', AdminAuthentication::class)->gr
         Route::post('books-data',           [BookImportController::class, 'upload'])    ->name('import.upload-books');
         Route::put('insert-data',           [BookImportController::class, 'store'])     ->name('import.store-books');
     });
-    /*
     Route::group(['prefix' => 'maintenance'], function () {
         Route::group(['prefix' => 'books'], function () {
-            Route::get('books',             [BookMaintenanceController::class, 'index'])    ->name('books');
-            Route::get('add-book',          [BookMaintenanceController::class, 'create'])   ->name('add-book');
-            Route::post('add-book',         [BookMaintenanceController::class, 'store'])    ->name('store-book');
-            Route::get('edit-book',         [BookMaintenanceController::class, 'edit'])     ->name('edit-book');
-            Route::put('edit-book',         [BookMaintenanceController::class, 'update'])   ->name('update-book');
-            Route::post('show-books',       [BookMaintenanceController::class, 'show'])     ->name('show-books');
-            Route::get('delete-book',       [BookMaintenanceController::class, 'destroy'])  ->name('delete-book');
+            Route::get('books',             [BookMaintenanceController::class, 'index'])    ->name('maintenance.books');
+            Route::get('add-book',          [BookMaintenanceController::class, 'create'])   ->name('maintenance.create-book');
+            Route::post('add-book',         [BookMaintenanceController::class, 'store'])    ->name('maintenance.store-book');
+            Route::get('edit-book',         [BookMaintenanceController::class, 'edit'])     ->name('maintenance.edit-book');
+            Route::put('edit-book',         [BookMaintenanceController::class, 'update'])   ->name('maintenance.update-book');
+            Route::post('show-books',       [BookMaintenanceController::class, 'show'])     ->name('maintenance.show-books');
+            Route::get('delete-book',       [BookMaintenanceController::class, 'destroy'])  ->name('maintenance.delete-book');
         });
-        Route::group(['prefix' => 'users'], function () {
-            Route::get('users',             [UserMaintenanceController::class, 'index'])    ->name('users');
-            Route::get('add-user',          [UserMaintenanceController::class, 'create'])   ->name('add-user');
-            Route::post('add-user',         [UserMaintenanceController::class, 'store'])    ->name('store-user');
-            Route::get('edit-user',         [UserMaintenanceController::class, 'edit'])     ->name('edit-user');
-            Route::put('edit-user',         [UserMaintenanceController::class, 'update'])   ->name('update-user');
-            Route::get('show-users',        [UserMaintenanceController::class, 'show'])     ->name('show-users');
-            Route::get('delete-user',       [UserMaintenanceController::class, 'destroy'])  ->name('delete-user');
+        Route::group(['prefix' => 'students'], function () {
+            Route::get('students',             [StudentMaintenanceController::class, 'index'])    ->name('maintenance.students');
+            Route::get('add-student',          [StudentMaintenanceController::class, 'create'])   ->name('maintenance.create-student');
+            Route::post('add-student',         [StudentMaintenanceController::class, 'store'])    ->name('maintenance.store-student');
+            Route::get('edit-student',         [StudentMaintenanceController::class, 'edit'])     ->name('maintenance.edit-student');
+            Route::put('edit-student',         [StudentMaintenanceController::class, 'update'])   ->name('maintenance.update-student');
+            Route::get('show-students',        [StudentMaintenanceController::class, 'show'])     ->name('maintenance.show-students');
+            Route::get('delete-student',       [StudentMaintenanceController::class, 'destroy'])  ->name('maintenance.delete-student');
         });
     });
-    */
     Route::post('logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
 });
