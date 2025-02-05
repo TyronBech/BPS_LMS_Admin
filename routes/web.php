@@ -7,6 +7,8 @@ use App\Http\Controllers\Report\LogsController;
 use App\Http\Controllers\Report\VisitorLogsController;
 use App\Http\Controllers\Report\TransactionController;
 use App\Http\Controllers\Report\BookCirculationController;
+use App\Http\Controllers\Import\BookImportController;
+use App\Http\Controllers\Import\StudentImportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('test', [AdminLoginController::class, 'test']);
@@ -32,16 +34,15 @@ Route::prefix('admin')->middleware('auth:admin', AdminAuthentication::class)->gr
         Route::get('book-circulation',      [BookCirculationController::class, 'index'])        ->name('report.book-circulation');
         Route::post('book-circulation',     [BookCirculationController::class, 'retrieve'])     ->name('report.book-circulation-retrieve');
     });
-        /*
-    /*
     Route::group(['prefix' => 'import'], function () {
-        Route::get('users',                 [ImportController::class, 'index'])         ->name('import-users');
-        Route::post('students-data',        [ImportController::class, 'upload'])        ->name('upload-users');
-        Route::post('insert-data',          [ImportController::class, 'store'])         ->name('insert-users');
-        Route::get('books',                 [ImportBookController::class, 'index'])     ->name('import-books');
-        Route::post('books-data',           [ImportBookController::class, 'upload'])    ->name('upload-books');
-        Route::put('insert-data',           [ImportBookController::class, 'store'])     ->name('insert-books');
+        Route::get('students',              [StudentImportController::class, 'index'])  ->name('import.import-students');
+        Route::post('students-data',        [StudentImportController::class, 'upload']) ->name('import.upload-students');
+        Route::post('insert-data',          [StudentImportController::class, 'store'])  ->name('import.store-students');
+        Route::get('books',                 [BookImportController::class, 'index'])     ->name('import.import-books');
+        Route::post('books-data',           [BookImportController::class, 'upload'])    ->name('import.upload-books');
+        Route::put('insert-data',           [BookImportController::class, 'store'])     ->name('import.store-books');
     });
+    /*
     Route::group(['prefix' => 'maintenance'], function () {
         Route::group(['prefix' => 'books'], function () {
             Route::get('books',             [BookMaintenanceController::class, 'index'])    ->name('books');
