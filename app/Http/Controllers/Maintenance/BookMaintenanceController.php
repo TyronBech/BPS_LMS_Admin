@@ -53,10 +53,10 @@ class BookMaintenanceController extends Controller
             ]);
         }catch(\Illuminate\Database\QueryException $e){
             DB::rollBack();
-            return redirect()->back()->with('create-warning', 'Something went wrong!');
+            return redirect()->back()->with('toast-error', 'Something went wrong!');
         }
         DB::commit();
-        return redirect()->back()->with('create-success', 'Book added successfully');
+        return redirect()->back()->with('toast-success', 'Book added successfully');
     }
     public function edit(Request $request)
     {
@@ -67,7 +67,7 @@ class BookMaintenanceController extends Controller
             $book = Book::where('accession', $accession)->first();
         } catch(\Exception $e){
             DB::rollBack();
-            return redirect()->back()->with('edit-error', 'Something went wrong!');
+            return redirect()->back()->with('toast-error', 'Something went wrong!');
         }
         DB::commit();
         return view('maintenance.books.edit', compact('book'));
@@ -105,15 +105,15 @@ class BookMaintenanceController extends Controller
                 'publisher'             => $request->input('publisher'),
                 'copyrights'            => $request->input('copyright'),
                 'remarks'               => $request->input('remarks'),
-                'cover_image'            => $request->input('cover_image'),
+                'cover_image'           => $request->input('cover_image'),
                 'digital_copy_url'      => $request->input('digital_copy_url')
             ]);
         }catch(\Illuminate\Database\QueryException $e){
             DB::rollBack();
-            return redirect()->back()->with('edit-error', 'Something went wrong!');
+            return redirect()->back()->with('toast-error', 'Something went wrong!');
         }
         DB::commit();
-        return redirect()->back()->with('edit-success', 'Book updated successfully');
+        return redirect()->back()->with('toast-success', 'Book updated successfully');
     }
     public function destroy(Request $request)
     {
@@ -123,9 +123,9 @@ class BookMaintenanceController extends Controller
             Book::find($id)->delete();
         }catch(\Illuminate\Database\QueryException $e){
             DB::rollBack();
-            return redirect()->route('books')->with('delete-error', 'Something went wrong!');
+            return redirect()->route('books')->with('toast-error', 'Something went wrong!');
         }
         DB::commit();
-        return redirect()->route('books')->with('delete-success', 'Book deleted successfully');
+        return redirect()->route('books')->with('toast-success', 'Book deleted successfully');
     }
 }
