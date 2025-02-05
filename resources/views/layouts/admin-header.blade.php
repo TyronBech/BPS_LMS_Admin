@@ -2,14 +2,14 @@
   <nav class="bg-blue-700 border-gray-200">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
       <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img class="rounded-full w-36 h-36" src="{{ asset('img/School Logo.png') }}" alt="School Logo">
+        <img class="rounded-full xl:w-36 xl:h-36 max-w-36 max-h-36 lg:h-34 lg:w-34 md:h-24 md:w-24 h-16 w-16" src="{{ asset('img/School Logo.png') }}" alt="School Logo">
         <div class="flex flex-col justify-center">
-          <h1 class="lg:text-2xl md:text-lg text-white font-semibold text-center">Bicutan Parochial School</h1>
+          <h1 class="lg:text-2xl md:text-lg text-xs text-white font-semibold text-center">Bicutan Parochial School</h1>
           <hr class="h-px bg-gray-200 border-0">
-          <h1 class="lg:text-xl md:text-md text-white font-semibold text-center">Library Management System</h1>
+          <h1 class="lg:text-xl md:text-md text-xs text-white font-semibold text-center">Library Management System</h1>
         </div>
       </a>
-      <button data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center p-2 w-10 h-10 mr-3 justify-center bg-blue-300 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-dropdown" aria-expanded="false">
+      <button data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center p-2 w-10 h-10 mx-3 justify-center md:bg-blue-300 text-sm text-gray-500 rounded-lg lg:hidden md:hover:bg-blue-100 focus:outline-none focus:ring-2 md:focus:ring-gray-200" aria-controls="navbar-dropdown" aria-expanded="false">
         <span class="sr-only">Open main menu</span>
         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
